@@ -41,49 +41,49 @@ public:
         return valid;
     }
 
-    std::string scheme() const
+    const std::string& scheme() const
     {
         assert( isValid() );
         return url.scheme;
     }
 
-    std::string username() const
+    const std::string& username() const
     {
         assert( isValid() );
         return url.username;
     }
 
-    std::string password() const
+    const std::string& password() const
     {
         assert( isValid() );
         return url.password;
     }
 
-    std::string hostname() const
+    const std::string& hostname() const
     {
         assert( isValid() );
         return url.hostname;
     }
 
-    std::string port() const
+    const std::string& port() const
     {
         assert( isValid() );
         return url.port;
     }
 
-    std::string path() const
+    const std::string& path() const
     {
         assert( isValid() );
         return url.path;
     }
 
-    std::string query() const
+    const std::string& query() const
     {
         assert( isValid() );
         return url.query;
     }
 
-    std::string fragment() const
+    const std::string& fragment() const
     {
         assert( isValid() );
         return url.fragment;
@@ -148,8 +148,12 @@ private:
         std::string portOrPassword;
 
         valid = true;
-        url.path = "/";
         url.integerPort = 0;
+
+        if (str[0] == '/') 
+            state = Path;
+        else
+            url.path = "/";
 
         for(size_t i = 0; i < str.size() && valid; ++i)
         {
@@ -273,7 +277,7 @@ private:
                 {
                     std::swap(url.hostname, usernameOrHostname);
                     std::swap(url.port, portOrPassword);
-                    url.integerPort = atoi(url.port.c_str());
+                    url.integerPort = (uint16_t) atoi(url.port.c_str());
                     state = Path;
                 }
                 else if( isalnum(ch) || ch == '%' )
@@ -297,7 +301,7 @@ private:
                 else if(ch == '/')
                 {
                     std::swap(url.port, portOrPassword);
-                    url.integerPort = atoi(url.port.c_str());
+                    url.integerPort = (uint16_t) atoi(url.port.c_str());
                     state = Path;
                 }
                 else
